@@ -1,14 +1,10 @@
-import requests
-import configparser
-
-config = configparser.ConfigParser()
-config.read('config.ini')
+import urequests as requests
+import config.py
 
 def doAPICall():
     url = "https://dpl.easypensum.com/api/filter"
-    credentials = config['CREDENTIALS']
 
-    payload = "{\"name\":\"" + credentials['name'] + "\",\"user\":\"" + credentials['user'] + "\",\"password\":\"" + credentials['password'] + "\"}"
+    payload = "{\"name\":\"" + config.name + "\",\"user\":\"" + config.user + "\",\"password\":\"" + config.password + "\"}"
     headers = {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0',
       'Accept': '*/*',
