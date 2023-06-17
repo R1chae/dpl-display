@@ -4,6 +4,7 @@ import utime
 import ujson
 import gzip
 import framebuf
+from epaperDriver import EPD
 from machine import Pin, SPI
 
 wlan = network.WLAN(network.STA_IF)
@@ -17,6 +18,18 @@ dplpassword = "yourPasswordAsUsedOnEasypensum"
 # [WIFI]
 ssid = "yourSSID"
 wifipassword = "yourPassword"
+
+# [Display resolution]
+EPD_WIDTH       = 400
+EPD_HEIGHT      = 300
+
+RST_PIN         = Pin(12)
+DC_PIN          = Pin(8)
+CS_PIN          = Pin(9)
+BUSY_PIN        = Pin(13)
+
+spi = SPI(1)
+spi.init(baudrate=4000_000)
 
 wlan.connect(ssid, wifipassword)
 connectiontext = "awaiting connection."
@@ -51,3 +64,11 @@ def doAPICall():
     return(response)
 
 print(gzip.decompress(doAPICall().content).decode())
+
+epd = EPD(spi, CS_PIN, DC_PIN, RST_PIN, BUSY_PIN)
+epd.init()
+buf = bytearray(400*300*2 // 4)
+fbuf = framebuf.FrameBuffer(buf,400,300,framebuf.GS2_HMSB)
+fbuf.fill(0x00)
+
+epd.display_frame(buf)
